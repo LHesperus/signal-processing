@@ -1,0 +1,35 @@
+%Generating 2ASK signal
+clc
+clear all;
+close all;
+%use orthogonal modulation generate modulated siganl
+%You can see the original signal v in the code.
+fc=1e4;                                                 %carrier frequency
+fs=1e5;                                                 %sample frequency
+Rs=2e3;                                                 %symbol rate of digital signal
+T=1/fs;                                                 %sample time
+L=1000;                                                  %length of signal
+t=(0:L-1)*T;                                            %time vector
+A=1;                                                    %%Ampltitude
+v=A*cos(2*pi*1000*t);                                   %modulation signal
+xs=sin(2*pi*fc*t);
+xc=cos(2*pi*fc*t);
+
+%2ASK
+%           _________          ______
+%   signal |         |        |      |      
+%----------|         |________|      |  so L/fs/T_ask is the length of a_n
+%           <-T_ask->                       
+%<-----------L points --------------->
+T_ask=1/Rs;                                          
+a_n=round(rand(1,round(L/(T_ask*fs))));
+a_ask=repmat(a_n,T_ask*fs,1);
+a_ask=a_ask(:)';
+%stairs(a_ask)                                        %figure 2ask,unuse plot
+I_ask=0;
+Q_ask=a_ask;
+y_2ask=I_ask.*xc+Q_ask.*xs;
+figure(1)
+plot(y_2ask)
+figure(2)
+plotSpectral(y_2ask,fs)
