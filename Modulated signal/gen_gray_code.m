@@ -9,13 +9,10 @@
 function gray_code=gen_gray_code(N)
 sub_gray=[0;1];
 for n=2:N
-    if N==2
-        gray_code=sub_gray;
-    elseif N>2
-        top_gray=[zeros(1,2^(n-1))' sub_gray];
-        bottom_gray=[ones(1,2^(n-1))' sub_gray];
-        bottom_gray=bottom_gray(end:-1:1,:);
-        sub_gray=[top_gray;bottom_gray];
-    end
+    top_gray=[zeros(1,2^(n-1))' sub_gray];
+    bottom_gray=[ones(1,2^(n-1))' sub_gray];
+    bottom_gray=bottom_gray(end:-1:1,:);
+    sub_gray=[top_gray;bottom_gray];
+end
 gray_code=sub_gray;
 end
