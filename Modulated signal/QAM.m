@@ -6,6 +6,7 @@
 % a constellation diagram consists of Gray code.Assume the bit 
 % of digits per Grey is x,then 2^x=M^(1/2),=>x=log4(M),
 % x is also the number of every group of data for IorQ.  
+%external function:gen_gray_code.m
 clc
 clear
 M=64;
@@ -15,11 +16,11 @@ SN=1000;                                                      %number of symbols
 L=N*SN;                                                       %length of bit stream
 Rs=1e3;
 %****************quadrature carrier****************************************
-fs=1e5;
+fs=1e5;                                                       %sample frequency
 ts=1/fs;
-Lsamples=L/Rs*fs;
+Lsamples=L/Rs*fs;                                             %length of sample 
 t=(0:Lsamples-1)*ts;
-fc=1e4;
+fc=1e4;                                                       %carrier frequency
 xc=cos(2*pi*fc*t);
 xs=sin(2*pi*fc*t);
 %****************generate binary sequences********************************
@@ -29,11 +30,8 @@ data_src=rand(1,L)>0.5;
 dataI=data_src(1:2:end);
 dataQ=data_src(2:2:end);
 %******************2 to N by constellation diagram************************
-%
-%I axis:
-%Q axis:
 A=1;                                                          %Fixed amplitude of constellation diagram  
-iq_axis=-(2^(N/2)-1):2:(2^(N/2)-1);
+iq_axis=-(2^(N/2)-1):2:(2^(N/2)-1);                           %The Position of Points in Constellation
 iq_axis=A*iq_axis;
 graycode=gen_gray_code(N/2);                                  %every row is a gray code
 
@@ -53,7 +51,7 @@ for i=1:SN
     q_axis(i)=find(QQ==0);
 end
 rate_ratio=size(xc,2)/size(i_axis,2);
-i_axis=repmat(i_axis,rate_ratio,1);
+i_axis=repmat(i_axis,rate_ratio,1);                          %Expanding data to match the length of carrier data
 i_axis=i_axis(:)';
 q_axis=repmat(q_axis,rate_ratio,1);
 q_axis=q_axis(:)';
