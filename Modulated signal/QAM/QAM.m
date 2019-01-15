@@ -9,6 +9,7 @@
 %external function:gen_gray_code.m
 clc
 clear
+j=sqrt(-1);
 M=64;
 N=log2(M);                                                    %number of modulation levels
 x=log(M)/log(4);
@@ -37,19 +38,22 @@ graycode=gen_gray_code(N/2);                                  %every row is a gr
 
 i_axis=zeros(1,SN);
 q_axis=zeros(1,SN);
+%Correspond IQ data to constellation map
 for i=1:SN
     temp=dataI(x*(i-1)+1:x*i);
     temp=repmat(temp,2^x,1);
     II=~xor(temp,graycode);
     II=sum(II,2);
-    i_axis(i)=find(II==0);
+    i_axis(i)=iq_axis(find(II==0));
     
     temp=dataQ(x*(i-1)+1:x*i);
     temp=repmat(temp,2^x,1);
     QQ=~xor(temp,graycode);
     QQ=sum(QQ,2);
-    q_axis(i)=find(QQ==0);
+    q_axis(i)=iq_axis(find(QQ==0));
 end
+s=i_axis+j*q_axis;                                           
+
 rate_ratio=size(xc,2)/size(i_axis,2);
 i_axis=repmat(i_axis,rate_ratio,1);                          %Expanding data to match the length of carrier data
 i_axis=i_axis(:)';
@@ -60,4 +64,6 @@ MQAM=i_axis.*xc+q_axis.*xs;
 figure(1)
 plot(MQAM)
 figure(2)
-plotSpectral(MQAM,fs)
+plotSpectral(MQAM,fs);
+figure(3)
+plot(s,'o');grid on;axis('equal',[-10 10 -10 10]);
