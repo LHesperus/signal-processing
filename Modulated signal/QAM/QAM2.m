@@ -65,3 +65,22 @@ legend('Received Signal','Signal Constellation');
 axis([-5 5 -5 5]); % Set axis ranges.
 hold off;
 
+
+%% Demodulation
+% Demodulate signal using 16-QAM.
+zsym = demodulate(modem.qamdemod(M),yrx);
+
+
+%% Symbol-to-Bit Mapping
+% Undo the bit-to-symbol mapping performed earlier.
+hIntToBit = comm.IntegerToBit(k);
+z = step(hIntToBit,zsym);
+
+%% BER Computation
+% Compare x and z to obtain the number of errors and
+% the bit error rate.
+hErrorCalc = comm.ErrorRate;
+berVec = step(hErrorCalc,x,z);
+bit_error_rate = berVec(1)
+number_of_errors = berVec(2)
+
