@@ -13,7 +13,7 @@ j=sqrt(-1);
 M=64;
 N=log2(M);                                                    %number of modulation levels
 x=log(M)/log(4);
-SN=1000;                                                      %number of symbols
+SN=10000;                                                      %number of symbols
 L=N*SN;                                                       %length of bit stream
 Rs=1e3;
 %****************quadrature carrier****************************************
@@ -31,7 +31,7 @@ data_src=rand(1,L)>0.5;
 dataI=data_src(1:2:end);
 dataQ=data_src(2:2:end);
 %******************2 to N by constellation diagram************************
-A=1;                                                          %Fixed amplitude of constellation diagram  
+A=1/(sqrt(2)*(2^(N/2)-1));                                    %Fixed amplitude of constellation diagram,and Make the maximum amplitude 1  
 iq_axis=-(2^(N/2)-1):2:(2^(N/2)-1);                           %The Position of Points in Constellation
 iq_axis=A*iq_axis;
 graycode=gen_gray_code(N/2);                                  %every row is a gray code

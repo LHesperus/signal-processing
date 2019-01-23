@@ -4,12 +4,12 @@ clear
 
 Rs=10e2;                                        %bit ratio
 Ts=1/Rs;
-N=50;                                          %Number of bits to process
-fc=20e2;                                        %carrier frequency
+N=10000;                                          %Number of bits to process
+fc=10e3;                                        %carrier frequency
 fs=10e4;                                        %sample frequency
 T=1/fs;
 t=(0:(round(N*Ts/T)-1))*T;
-r=Ts/T;
+r=round(Ts/T);
 
 a=rand(1,N)>0.5;                               %bit symbol
 
@@ -60,8 +60,10 @@ xs=sin(2*pi*fc*t);
 %% OQPSK
 A=1;    %amplitude
 OQPSK_signal=A*(cos(phi_sample).*xc-sin(phi_sample).*xs);
-
+figure
+plot(OQPSK_signal)
 figure
 plotSpectral(OQPSK_signal,fs)
 
+s_complex=cos(phi_sample)+sin(phi_sample)*j;
 

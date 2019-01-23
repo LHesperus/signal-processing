@@ -5,7 +5,7 @@ clear
 Rs=10e2;                                        %bit ratio
 Ts=1/Rs;
 N=10000;                                          %Number of bits to process
-fc=20e2;                                        %carrier frequency
+fc=10e3;                                        %carrier frequency
 fs=10e4;                                        %sample frequency
 T=1/fs;
 t=(0:(round(N*Ts/T)-1))*T;
@@ -43,6 +43,7 @@ phi_sample=phi_sample(:)';
 %% constellation
 j=sqrt(-1);
 s=cos(phi)+sin(phi)*j;
+%aaa=sum((cos(phi)>=-0.1)&(cos(phi)<=0.1))+sum((cos(phi)>=-1.1)&(cos(phi)<=-0.9))+sum((cos(phi)>=0.9)&(cos(phi)<=1.1))
 figure
 plot(s,'o')
 grid on;axis('equal',[-1.5 1.5 -1.5 1.5]);
@@ -61,3 +62,7 @@ pi4DQPSK_signal=A*(cos(phi_sample).*xc-sin(phi_sample).*xs);
 
 figure
 plotSpectral(pi4DQPSK_signal,fs)
+
+s_complex=cos(phi_sample)+sin(phi_sample)*j;
+
+
