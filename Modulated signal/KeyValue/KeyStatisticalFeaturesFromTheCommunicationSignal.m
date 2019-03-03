@@ -5,7 +5,8 @@ clear
 
 %% Hilbert transformation  
 %MSK;      a=s;                                     %s:MSK signal
-OQPSK;    a=OQPSK_signal;
+GMSK;     a=s;
+%OQPSK;    a=OQPSK_signal;
 %pi4DQPSK;  a=pi4DQPSK_signal;
 %QAM;      a=MQAM;
 a_h=hilbert(a);
@@ -48,7 +49,7 @@ gamma=MaxSpectralDensity(a)
 %% 
 %a=a_h;%%error 
 %a=s;%QAM
-a=s_complex;%OQPSK,pi/4DQPSK
+%a=s_complex;%OQPSK,pi/4DQPSK
 C21=M_pq(a,2,1)
 C40=M_pq(a,4,0)-3*M_pq(a,2,0)^2;
 C42=M_pq(a,4,2)-M_pq(a,2,0).^2-2*M_pq(a,2,1).^2;
