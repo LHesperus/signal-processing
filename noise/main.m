@@ -28,4 +28,4 @@ figure
 plotSquareSpectrum(s,fs)
 
 figure
-%plotBispectra(s,fs)
+plotBispectra(s,fs,1,1)
