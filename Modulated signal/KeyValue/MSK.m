@@ -6,7 +6,7 @@ clear
 
 Rs=10e2;                                        %bit ratio
 Ts=1/Rs;
-N=10000;                                          %Number of bits to process
+N=1000;                                          %Number of bits to process
 fc=10e3;                                        %carrier frequency
 fs=10e4;                                        %sample frequency
 T=1/fs;
@@ -98,6 +98,7 @@ ylabel('q*sin(\pi*t/(2*Ts)')
 
 %% s: MSK signal
 s=p_sample.*cos(pi*t/(2*Ts)).*xc-q_sample.*sin(pi*t/(2*Ts)).*xs;
+sl=p_sample.*cos(pi*t/(2*Ts))-q_sample.*sin(pi*t/(2*Ts))*j;
 figure
 plot(s)
 title('MSK')

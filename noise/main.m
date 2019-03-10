@@ -22,10 +22,10 @@ figure
 plotSpectral2(s,fs)
 
 figure
-plotPowerSpectrum(s,fs)
+plotPowerSpectrum(s,fs);
 
 figure
-plotSquareSpectrum(s,fs)
+plotSquareSpectrum(s,fs);
 
 figure
-plotBispectra(s,fs,1,1)
+plotBispectra(s,fs,1,1);
