@@ -4,7 +4,7 @@ clear
 
 Rs=10e2;                                        %bit ratio
 Ts=1/Rs;
-N=10000;                                          %Number of bits to process
+N=1000;                                          %Number of bits to process
 fc=10e3;                                        %carrier frequency
 fs=10e4;                                        %sample frequency
 T=1/fs;
