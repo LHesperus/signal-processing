@@ -6,10 +6,11 @@ M=64;   %max delay
 n=0:N-1;
 f=[0.15,0.17,0.26];
 phi_k=2*pi*rand(1,3);             %phase [0 2pi]
-a_k=rand(1,3).*exp(j*phi_k);       %|a_k|?
+a=rand(1,3);
+a_k=a.*exp(j*phi_k);       %|a_k|?
 s_1=a_k(1)*exp(j*2*pi*f(1)*n);
-s_2=a_k(1)*exp(j*2*pi*f(2)*n);
-s_3=a_k(1)*exp(j*2*pi*f(3)*n);
+s_2=a_k(2)*exp(j*2*pi*f(2)*n);
+s_3=a_k(3)*exp(j*2*pi*f(3)*n);
 s_n=[s_1;s_2;s_3];
 v_1=awgn(s_1,20,'measured');
 v_2=awgn(s_2,25,'measured');
@@ -20,8 +21,17 @@ u=sum(s_n+v);     %signal
 figure
 plot(abs(u))
 
+%Autocorrelation  theoretical value
+m=-M+1:M-1;        %delay of two signal
+r_u=sum(diag(a.^2)*exp(j*2*pi*f'*m));
+figure
+plot(m,abs(r_u));
+
+
+
+
 %r_1(m)=1/N*\sum{n=0}{N-1}u_N(n)*u_N_*(n-m)  |m|<=N-1
-m=-M+1:M-1;        %delay of two sgnal
+
 r_1=zeros(1,size(m));
 r_1_m=0;
 for mm=1:size(m,2);
@@ -36,9 +46,10 @@ for mm=1:size(m,2);
     end
 
     r_1(mm)=r_1_m/N;
+    r_1_m=0;
 end
 figure
-plot(m,r_1)
+plot(m,r_1)%不像
 
 %% Autocorrelation function by FFT
 %%自相关函数的幅度怎么确定
@@ -52,3 +63,9 @@ r_0m=size(u_2N,2)*ifft(S);%ifft出来的是复数，应该用绝对值来恢复吗
 r_2=[r_0m(N+2:2*N),r_0m(1:N)];
 figure
 plot(m,abs(r_2(m(1)+N:m(end)+N)))
+
+
+%%
+r_3=xcorr(u);
+figure
+plot(m,abs(r_3(m(1)+N:m(end)+N)));
