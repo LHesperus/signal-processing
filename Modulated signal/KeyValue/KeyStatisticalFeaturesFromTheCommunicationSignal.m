@@ -3,13 +3,33 @@ clc
 clear
 
 
+
+%%real_file test
+%fc= 10e3;
+%
+%[y,Fs] = audioread('CDB_20M_NB_IQ_30KHz_MGCM_OQPSK_40dBm_10Ksyms_signal.wav');
+%sound(y,Fs);
+%y=y(1:1000,:);
+%figure
+%plot(y(:,1))
+%figure
+%y_abs=sqrt(y(:,1).^2+y(:,2).^2);
+%plot(y_abs)
+%fs=Fs
+%
+%a=y(:,1);
+%a=y_abs;
+
+
 %% Hilbert transformation  
-MSK;      a=s;                                     %s:MSK signal
+MSK;      a=s(1:1000);gen_data_file(s(1:1000),"MSK_signal.txt")   %s:MSK signal
 %GMSK;     a=s;
-%OQPSK;    a=OQPSK_signal;
+%OQPSK;    a=OQPSK_signal;gen_data_file(OQPSK_signal(1:1000),"OQPSK_signal.txt")
+
 %pi4DQPSK;  a=pi4DQPSK_signal;
 %QAM;      a=MQAM;
 a_h=hilbert(a);
+%a_h=y(:,1)+y(:,2)*1i;
 amp_a=abs(a_h);                                        %Envelope calculation from the Hilbert transform
 m_a=mean(amp_a);
 
