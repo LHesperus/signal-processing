@@ -6,7 +6,7 @@ j=sqrt(-1);
 fc=1e4;                                                 %carrier frequency
 fs=1e5;                                                 %sample frequency
 T=1/fs;                                                 %sample time
-L=300;                                                 %length of signal
+L=30;                                                 %length of signal
 t=(0:L-1)*T;                                            %time vector
 A=1;                                                    %%Ampltitude
 ff=fs*(-L/2+1:L/2)/L;
@@ -71,29 +71,37 @@ subplot(3,2,1)
 plot3(ff,real(fftshift(fft(y_r))),zeros(1,size(ff,2)))
 hold on
 plot3(ff,zeros(1,size(ff,2)),imag(fftshift(fft(y_r))))
+max_Y=max([abs(real(fftshift(fft(y_r)))) abs(imag(fftshift(fft(y_r))))]);
 xlabel('f'); ylabel('r') ;zlabel('i');title('y_r')
-axis([min(ff) max(ff) -100 100 -100 100])
+axis([min(ff) max(ff) -max_Y max_Y -max_Y max_Y])
+
 subplot(3,2,2)
 plot3(ff,real(fftshift(fft(y_i))),zeros(1,size(ff,2)))
 hold on
 plot3(ff,zeros(1,size(ff,2)),imag(fftshift(fft(y_i))))
-axis([min(ff) max(ff) -100 100 -100 100])
+max_Y=max([abs(real(fftshift(fft(y_i)))) abs(imag(fftshift(fft(y_i))))]);
+axis([min(ff) max(ff) -max_Y max_Y -max_Y max_Y])
 xlabel('f'); ylabel('r') ;zlabel('i');title('y_i (y_r by hilbert)')
+
 subplot(3,2,3)
 plot3(ff,real(fftshift(fft(y_i*j))),zeros(1,size(ff,2)))
 hold on
 plot3(ff,zeros(1,size(ff,2)),imag(fftshift(fft(y_i*j))))
-axis([min(ff) max(ff) -100 100 -100 100])
+axis([min(ff) max(ff) -max_Y max_Y -max_Y max_Y])
 xlabel('f'); ylabel('r') ;zlabel('i');title('y_i*j')
+
 subplot(3,2,4)
 plot3(ff,real(fftshift(fft(y))),zeros(1,size(ff,2)))
 hold on
 plot3(ff,zeros(1,size(ff,2)),imag(fftshift(fft(y))))
-axis([min(ff) max(ff) -200 200 -200 200])
+max_Y=max([abs(real(fftshift(fft(y)))) abs(imag(fftshift(fft(y))))]);
+axis([min(ff) max(ff) -max_Y max_Y -max_Y max_Y])
 xlabel('f'); ylabel('r') ;zlabel('i');title('y=y_r+y_i*j')
+
 subplot(3,2,5)
 plot(ff,abs(fftshift(fft(y))))
-axis([min(ff) max(ff) -200 200])
+max_Y=max(abs(fftshift(fft(y))));
+axis([min(ff) max(ff) -max_Y max_Y])
 xlabel('f'); ylabel('Y');title('abs(Y)')
 
 figure
