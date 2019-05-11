@@ -11,11 +11,14 @@ A=1;                                                    %%Ampltitude
 ff = fs*(-L/2+1:(L/2))/L;
 
 y=A*(1+cos(2*pi*fc2*t)).*cos(2*pi*fc1*t);
+y_q=A*(1+cos(2*pi*fc2*t)).*sin(2*pi*fc1*t);
 %y=A*cos(2*pi*(fc1-fc2)*t)+cos(2*pi*(fc1+fc2)*t);
 figure
-subplot(2,1,1)
+subplot(3,1,1)
 plot(y)
-subplot(2,1,2)
+subplot(3,1,2)
+plot(y_q)
+subplot(3,1,3)
 plot(ff,abs(fftshift(fft(y))))
 
 [b,a] = butter(8,0.2,'high');
