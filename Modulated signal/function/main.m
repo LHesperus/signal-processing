@@ -10,8 +10,9 @@ L=1000;                                                 %length of signal
 t=(0:L-1)*T;                                            %time vector
 A=1;                                                    %%Ampltitude 
 m_a=0.3;   
-SNR=10;
+SNR=20;
 %% AM
+v=A*cos(2*pi*1000*t);    
 y_AM=gen_AM(A,fc,fs,L,m_a,v);
 y_AM=awgn(y_AM,SNR,'measured');
 figure
