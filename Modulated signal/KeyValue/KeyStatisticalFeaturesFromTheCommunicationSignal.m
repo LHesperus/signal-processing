@@ -3,13 +3,21 @@ clc
 clear
 
 
+
+%%real_file test
+
+
+
 %% Hilbert transformation  
-MSK;      a=s;                                     %s:MSK signal
+%MSK;      a=s(1:1000);gen_data_file(s(1:1000),"MSK_signal.txt")   %s:MSK signal
 %GMSK;     a=s;
-%OQPSK;    a=OQPSK_signal;
+OQPSK;    a=OQPSK_signal;%gen_data_file(OQPSK_signal(1:1000),"OQPSK_signal.txt")
+
 %pi4DQPSK;  a=pi4DQPSK_signal;
-%QAM;      a=MQAM;
+%QAM;      a=MQAM;gen_data_file(MQAM(1:1000),"MQAM_signal.txt")
+%a=a(1:1000);
 a_h=hilbert(a);
+%a_h=y(:,1)+y(:,2)*1i;
 amp_a=abs(a_h);                                        %Envelope calculation from the Hilbert transform
 m_a=mean(amp_a);
 
@@ -49,7 +57,8 @@ title('\Phi_{NL}')
 figure
 plot(abs(angle_a))
 title('|\Phi_{NL}|')
-
+figure
+plot(angle(s_complex))
 
 %% 
 gamma=MaxSpectralDensity(a)
@@ -57,8 +66,9 @@ gamma=MaxSpectralDensity(a)
 %% 
 %a=a_h;%%error 
 %a=s;%QAM
-%a=s_complex;%OQPSK,pi/4DQPSK
-
+a=s_complex;a_real=real(a);a_imag=imag(a);%OQPSK,pi/4DQPSK
+%gen_data_file(a_real(1:1000),"OQPSK_signal_real.txt") ;gen_data_file(a_imag(1:1000),"OQPSK_signal_imag.txt") 
+%gen_data_file(a_real(1:1000),"pi4DQPSK_signal_real.txt") ;gen_data_file(a_imag(1:1000),"pi4DQPSK_signal_imag.txt") 
 %sl=awgn(sl,10,'measured');
 %s=awgn(s,5,'measured');
 %a=real(s);
