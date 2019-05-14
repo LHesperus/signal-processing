@@ -20,7 +20,7 @@ plot(y_AM)
 title('AM')
 
 %% ASK2
-y_2ask=gen_ASK2(A,fc,fs,Rs,L);
+[y_2ask,I,Q]=gen_ASK2(A,fc,fs,Rs,L);
 y_2ask=awgn(y_2ask,SNR,'measured');
 figure
 plot(y_2ask)

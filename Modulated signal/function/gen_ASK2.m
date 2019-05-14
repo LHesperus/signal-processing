@@ -1,5 +1,5 @@
 %Generating 2ASK signal
-function y_2ask=gen_ASK2(A,fc,fs,Rs,L)
+function [y_2ask,I_ask,Q_ask]=gen_ASK2(A,fc,fs,Rs,L)
 %use orthogonal modulation generate modulated siganl
 %You can see the original signal v in the code.
 if nargin==0

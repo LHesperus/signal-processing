@@ -1,5 +1,5 @@
 %Generating AM signal
-function y_AM=gen_AM(A,fc,fs,L,m_a,v)
+function [y_AM,I_AM,Q_AM]=gen_AM(A,fc,fs,L,m_a,v)
 %use orthogonal modulation generate modulated siganl
 %You can see the original signal v in the code.
 if nargin==0
