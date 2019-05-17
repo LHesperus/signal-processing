@@ -22,8 +22,10 @@ xc=cos(2*pi*fc*t);
 %<-----------L points --------------->
 T_ask=1/Rs;                                          
 a_n=round(rand(1,round(L/(T_ask*fs))));
-a_ask=repmat(a_n,T_ask*fs,1);
+a_ask=repmat(a_n,round(T_ask*fs),1);
 a_ask=a_ask(:)';
+size(xc)
+size(a_ask)
 %stairs(a_ask)                                        %figure 2ask,unuse plot
 I_ask=0;
 Q_ask=a_ask;
