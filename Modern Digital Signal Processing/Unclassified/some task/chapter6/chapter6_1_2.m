@@ -5,7 +5,7 @@ close all
 j=sqrt(-1);
 %% gen signal 
 f=[0.15 0.25 0.30]';
-N=400;                      %length of signal
+N=500;                      %length of signal
 M=6;                           % filter order
 SNR=[20 25 30]';
 sigma_v=1;                    %noise power
@@ -30,7 +30,7 @@ for test=1:test_N
     end
     
     %% RLS
-    lambda=0.98;
+    lambda=0.95;
     delta=0.05;
     I=diag(ones(1,M));
     P=1/delta*I;
@@ -72,13 +72,23 @@ S_AR=abs(S_AR);
 end
 figure
 plot(10*log10(abs(xi_test).^2))
+
 figure
 subplot(3,1,1)
 plot(10*log10(err(1,:)))
+xlabel('Iteration times')
+ylabel('MSE')
+title('learning curve of signal 1 ')
 subplot(3,1,2)
 plot(10*log10(err(2,:)))
+xlabel('Iteration times')
+ylabel('MSE')
+title('learning curve of signal 2 ')
 subplot(3,1,3)
 plot(10*log10(err(3,:)))
+xlabel('Iteration times')
+ylabel('MSE')
+title('learning curve of signal 3 ')
 
 
 
