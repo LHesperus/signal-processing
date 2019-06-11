@@ -1,3 +1,4 @@
+% problem : how to compute  MSE, 
 clc
 clear all
 close all
@@ -8,15 +9,15 @@ M=16;       %Number of elements
 K=2;        %number of source
 d=0.5;      % lambda/2
 theta=[-20 30]*pi/180; %DOA
-SNR_theta=[0 30];
-L=256;              %number of snapshot
+SNR_theta=[10 30];
+L=128;              %number of snapshot
 
 
 %% N test
 test_N=100;
 for test=1:test_N
     %% gen signal
-    S=10.^(SNR_theta/10)'.*exp(j*2*pi*rand(K,L));
+    S=10.^(SNR_theta/20)'.*exp(j*2*pi*rand(K,L));
     A=exp(-j*(0:M-1)'.*2*pi*d*sin(theta));
     N=randn(M,L)+randn(M,L)*j;  %gauss noise
     X=A*S+N;
@@ -27,12 +28,14 @@ for test=1:test_N
     [B,I] = sort(diag(D));
     G=V(:,I(1:end-K));
     
-   theta_range=(-90:0.1:90)*pi/180;
+   %theta_range=(-90:0.1:90)*pi/180;
+   theta_range=(-pi/2:pi/1000:pi/2);
     for tt=1:length(theta_range)
         a=exp(-j*2*pi*d*[0:M-1]'*sin(theta_range(tt)));
         P_MUSIC(tt)=1./(a'*(G*G')*a);
     end
-    P_MUSIC=10*log10(abs(P_MUSIC));
+    P_MUSIC=abs(P_MUSIC/max(abs(P_MUSIC)));
+    P_MUSIC=10*log10(P_MUSIC);
     [pks,locs]=findpeaks(P_MUSIC);
     [a,b]=sort(pks);
     theta_est=theta_range(locs(b(end-K+1:end)));
@@ -43,3 +46,6 @@ MSE=mean(err.^2,2);
 
 figure
 plot(theta_range/pi*180,P_MUSIC)
+title('P_{MUSIC}')
+xlabel('\theta / \circ')
+ylabel('Normalized spatial spectrum /dB')

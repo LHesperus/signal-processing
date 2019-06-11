@@ -11,8 +11,8 @@ M=8;       %Number of elements
 K=2;        %number of source
 d=0.5;      % lambda/2
 theta=[-20 30]*pi/180; %DOA
-kk=1;      %Signals of interest
-SNR_theta=[10 30];
+kk=2;      %Signals of interest,1->s1,2->s2
+SNR_theta=[30 10];
 L=1024;              %number of snapshot
 
     %% gen signal

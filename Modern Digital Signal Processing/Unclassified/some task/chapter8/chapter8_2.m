@@ -9,7 +9,7 @@ K=2;        %number of source
 d=0.5;      % lambda/2
 theta=[-20 30]*pi/180; %DOA
 SNR_theta=[0 0];
-L=100;              %number of snapshot
+L=128;              %number of snapshot
 
 
 %% N test
