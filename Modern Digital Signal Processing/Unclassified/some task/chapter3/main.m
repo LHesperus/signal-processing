@@ -6,22 +6,16 @@ N=2^16; %length of  signal
 M=64;   %max delay
 n=0:N-1;
 f=[0.15,0.17,0.26];
+SNR=[20 25 30];
+v=sqrt(1/2)*(randn(1,N)+randn(1,N)*j);
 
 for ii=1:L
-	phi_k=2*pi*rand(1,3);             %phase [0 2pi]
-	a=rand(1,3);
-    a=[1 2 3];
-	a_k=a.*exp(j*phi_k);       %|a_k|?
-   
-	s_1=a_k(1)*exp(j*2*pi*f(1)*n);
-	s_2=a_k(2)*exp(j*2*pi*f(2)*n);
-	s_3=a_k(3)*exp(j*2*pi*f(3)*n);
-	s_n=[s_1;s_2;s_3];
-	v_1=awgn(s_1,20,'measured');
-	v_2=awgn(s_2,25,'measured');
-	v_3=awgn(s_3,30,'measured');
-	v=[v_1;v_2;v_3];
-	u=sum(v);     %signal 
+	phi_k=2*pi*rand(1,3)';             %phase [0 2pi]
+
+
+	a_k=10.^(SNR/10/2).'.*exp(j*(2*pi*f'.*n+phi_k));       %|a_k|?
+    a_k=sum(a_k,1);
+	u=a_k+v;     %signal 
 	
 	figure
 	plot(abs(u))
@@ -30,14 +24,14 @@ for ii=1:L
 	title('|u(n)|')
 	
 	%Autocorrelation  theoretical value
-	m=-M+1:M-1;        %delay of two signal
-	r_u=sum(diag(a.^2)*exp(j*2*pi*f'*m));
-	r_u=abs(r_u)/max(abs(r_u));
-	figure
-	plot(m,r_u);
-	xlabel('m')
-	ylabel('ampltitude')
-	title('theoretical value of |r(m)|')
+ 	m=-M+1:M-1;        %delay of two signal
+% 	r_u=sum(diag(a.^2)*exp(j*2*pi*f'*m));
+% 	r_u=abs(r_u)/max(abs(r_u));
+% 	figure
+% 	plot(m,r_u);
+% 	xlabel('m')
+% 	ylabel('ampltitude')
+% 	title('theoretical value of |r(m)|')
 	
 	%r_1(m)=1/N*\sum{n=0}{N-1}u_N(n)*u_N_*(n-m)  |m|<=N-1
 	
