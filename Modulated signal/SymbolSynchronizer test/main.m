@@ -6,7 +6,7 @@ close all
 j=sqrt(-1);
 rf = 0.6;
 span = 4;
-sps = 64 ;
+sps = 40 ;
 fs=64e3;
 
 
@@ -22,9 +22,9 @@ H=abs(fftshift(fft(h1)));
 plot(10*log10(H/max(H)))
 title('H')
 %% gen iq baseband signal
-di = 2*randi([0 1], 1, 100) - 1;
+di = 2*randi([0 1], 1, 1000) - 1;
 di=di*sqrt(2);
-dq = 2*randi([0 1], 1, 100) - 1;
+dq = 2*randi([0 1], 1, 1000) - 1;
 dq=dq*sqrt(2);
 diq=di+dq*j;
 
@@ -50,23 +50,8 @@ riq=ri+rq*j;
 % yiq=yi+yq*j;
 
 
-%% upfirdn func test
-yi=conv(xi,h1);
-yq=conv(xq,h1);
-
-aa=yi(sps/2:end-sps/2).*(yi(1:end-sps+1)-yi(sps:end));
-%TED
-for ii=1:length(yi)-sps
-   e_i(ii)=yi(sps/2+ii)*(yi(ii+sps)-yi(ii));
-   e_q(ii)=yq(sps/2+ii)*(yi(ii+sps)-yi(ii));
-   err(ii)=e_i(ii)+e_q(ii);
-end
-
-yiq=yi+yq*j;
-
-figure
-plot(err)
-
+%% upfirdn func test 
+[yiq,ypc]=Gardner_func(riq,sps);
 %% plot
 figure
 subplot(4,1,1)
@@ -76,17 +61,39 @@ plot(xi);title('xi')
 subplot(4,1,3)
 plot(ri);title('ri')
 subplot(4,1,4)
-plot(yi);title('yi')
+plot(real(yiq));title('yi')
 
 %% constellation 
 figure
-subplot(4,1,1)
-plot(diq,'kx')
-subplot(4,1,2)
-plot(xiq,'kx')
-subplot(4,1,3)
-plot(riq,'kx')
-subplot(4,1,4)
-plot(yiq,'kx')
+subplot(5,1,1)
+plot(diq,'kx');title('diq')
+subplot(5,1,2)
+plot(xiq,'kx');title('xiq')
+subplot(5,1,3)
+plot(riq,'kx');title('riq')
+subplot(5,1,4)
+plot(ypc,'kx');title('after PC')
+subplot(5,1,5)
+plot(yiq,'kx');title('yiq')
 suptitle('constellation ')
 
+%%
+
+s = abs(ypc);%1000个采样点
+%用小波函数db1对信号进行单尺度小波分解
+[cA1,cD1]=dwt(s,'haar');
+figure
+subplot(3,2,1); plot(s); 
+title('原始信号');
+subplot(3,2,2); plot(cA1);
+title('近似分量');
+subplot(3,2,3); plot(cD1);
+title('细节分量');
+
+figure
+len=length(cA1);
+ff=(-len/2:len/2-1)/len;
+plot(ff,abs(fftshift(fft(cA1))))
+len=length(ypc);
+ff=(-len/2:len/2-1)/len;
+figure;plot(ff,abs(fftshift(fft(sqrt(real(ypc).^4+imag(ypc).^4)))))

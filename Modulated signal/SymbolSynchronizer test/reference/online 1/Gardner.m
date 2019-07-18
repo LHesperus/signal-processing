@@ -145,7 +145,7 @@ while(  Interp_Pos < ( datalen - 6 ) )
     %  NewPosition = OldPosition + Fs/Fd/2 + TED  
     %++++++++++++++++++++++++++++++++++++++++++++ 
     Interp_Pos = Interp_Pos + Ratio + timing_error; 
- 
+% timing_error
     ted_data1 = ted_data3; 
     ted_data2 = Interp_data;   
  
