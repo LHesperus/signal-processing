@@ -3,10 +3,12 @@ clear
 close all
 %% 
 fs=10e3;
+fs0=fs;
 f0=1e3;
 L=100;
 t=(0:L-1)/fs;
 x=sin(2*pi*f0*t);
+x0=x;
 X=fftshift(fft(x));
 %%
 ff=(-L/2:L/2-1)*(fs/L);
@@ -63,3 +65,10 @@ figure
 stem(y_fil2)
 figure
 plot(abs(Y_fil2))
+
+%% func test
+[y,I,D,out_fs_real]=resample_CIC(x0,fs0,fs0/2,1);
+Y=fftshift(fft(y));
+stem(y)
+figure
+plot(abs(Y))

@@ -1,0 +1,1 @@
+function [y,I,D,out_fs_real]=resample_CIC(xin,in_fs,out_fs,CIC_time)    I=10;    D=round(I*in_fs/out_fs);    x_I=zeros(1,(length(xin)-1)*I+1);    x_I(1:I:end)=xin;    h=ones(1,min(I,D));    y_fil=conv(x_I,h);    if CIC_time==2        y_fil=conv(y_fil,h); %% CIC - CIC    end    y_cic=y_fil(1:D:end);    y=y_cic;   out_fs_real=in_fs*I/D;end
