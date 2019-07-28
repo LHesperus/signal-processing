@@ -131,10 +131,10 @@ xlabel('snr(dB)');ylabel('BER');
 hold on;
 
 
-figure(3);
-subplot(3,1,1),stem(II_four(2500:2600));legend('II_four');grid;
-subplot(3,1,2),stem(yi_II_judge(2500:2600));legend('II_shape');grid;
-subplot(3,1,3),stem(yi_II(2500:2600));legend('II_shape');grid;
+% figure(3);
+% subplot(3,1,1),stem(II_four(2500:2600));legend('II_four');grid;
+% subplot(3,1,2),stem(yi_II_judge(2500:2600));legend('II_shape');grid;
+% subplot(3,1,3),stem(yi_II(2500:2600));legend('II_shape');grid;
 % subplot(3,1,1),stem(QQ_four(1:100));legend('II_four');grid;
 % subplot(3,1,2),stem(yi_QQ_judge(1:100));legend('II_shape');grid;
 % subplot(3,1,3),stem(yi_QQ(1:100));legend('II_shape');grid;
@@ -153,3 +153,8 @@ for i=1:length(SNRindB)
 end
 semilogy(SNRindB,theo_err);
 grid on;
+
+figure;plot(II_m0+QQ_m0*j,'x')
+figure;plot(II_m+QQ_m*j,'x')
+figure;plot(yi_I+yi_Q*j,'x')
+figure;plot(yi_II+yi_QQ*j,'x')
