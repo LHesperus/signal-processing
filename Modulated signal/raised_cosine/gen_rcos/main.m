@@ -2,17 +2,26 @@ clc
 clear 
 close all
 %% parameter
-fs=40e3;
+fs=64e3*40;
 Ts=1/fs;
 fb=10e3;
 Tb=1/fb;
-alpha=0.6;
-L=100;
+alpha=0.5;
+L=256*6;
 t=(-L/2:L/2-1)/fs;
 t(L/2+1)=1e-9;
+pi=3.1415926;
 %% root raised cosine
 h1=(sin((1-alpha)*pi*t/Tb)+4*alpha*t/Tb.*cos((1+alpha)*pi*t/Tb))./(pi*t/Tb.*(1-(4*alpha*t/Tb).^2));
 h1=h1/(2*pi);% 2pi是我随便取的，貌似可以让升余弦峰值为1
+
+xxx=ones(1,100)+2*ones(1,100)*j;
+xxxx=zeros(1,4000);
+xxxx(1:40:end)=xxx;
+aaa=conv(h1,(xxxx)).';
+aaa=aaa(1:64:end);
+IQ_out=sym_synch_Gardner(aaa);
+aaaaaaaa
 h_rcos=conv(h1,h1);
 H1=fftshift(fft(h1));
 H_rcos=fftshift(fft(h_rcos));
