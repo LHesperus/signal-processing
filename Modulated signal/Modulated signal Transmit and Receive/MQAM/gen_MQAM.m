@@ -19,6 +19,14 @@ lpf_lowf_stop=signal.lpf_lowf_stop;
 rolloff=signal.rolloff;
 span=signal.span;
 sps=signal.sps;
+%buf
+LOphaseTemp=signal.LOphaseTemp;
+LOphaseTemp_ddc=signal.LOphaseTemp_ddc;
+baseconvbuf=signal.baseconvbuf;
+ddcconvbuf=signal.ddcconvbuf;
+baserebuf=signal.baserebuf;
+Ifrebuf=signal.Ifrebuf;
+ddcrebuf=signal.ddcrebuf;
 %% gen IQ 
 if signal.bindataType=="Random"
     dataBin=randi([0 1],n,1);                             % Generate vector of binary data
@@ -45,10 +53,19 @@ dataIQ=dataMod;
 txSignal=zeros(1,length(dataIQ)*sps);
 txSignal(1:sps:end)=dataIQ;
 rrcFilter = rcosdesign(rolloff, span, sps,'sqrt');
-txSignal=conv(txSignal,rrcFilter);
-rclen=length(rrcFilter);
-txSignal=txSignal(round((rclen+1)/2:end-round((rclen-1)/2)));
+% shape-conv
+txSignal=[baseconvbuf,txSignal];
+[txSignal,xend]=Conv2(rrcFilter,txSignal);
+signal_new.baseconvbuf=xend;
+%resample
+% txSignal=resample(txSignal,fs,sps*fb);
+rebufferlen2=20;
+rebufferlen=round(rebufferlen2*fs/(sps*fb));
+txSignal= [baserebuf,txSignal];
+signal_new.baserebuf=txSignal(end-2*rebufferlen2+1:end);
 txSignal=resample(txSignal,fs,sps*fb);
+txSignal=txSignal(rebufferlen+1:end-rebufferlen);
+
 if signal.gen_method=="Baseband"
     txlen=length(txSignal);
     t=(0:txlen-1)/fs;
@@ -71,7 +88,14 @@ end
 % figure;plot(rxSignal(1:sps:end),'x') 
 %% gen IF signal
 if signal.gen_method=="IF"||signal.gen_method=="IF2Base"
-    txSignalIF=resample(txSignal,IFfs,fs);
+    %resample ->base to IF
+   % txSignalIF=resample(txSignal,IFfs,fs);
+    rebufferlen2=20;
+    rebufferlen=round(rebufferlen2*IFfs/fs);
+    txSignal= [Ifrebuf,txSignal];
+    signal_new.Ifrebuf=txSignal(end-2*rebufferlen2+1:end);
+    txSignal=resample(txSignal,IFfs,fs);
+    txSignalIF=txSignal(rebufferlen+1:end-rebufferlen);
     txlen=length(txSignalIF);
     t=(0:txlen-1)/IFfs;
     xc=cos(2*pi*fc*t+LOphaseTemp);
@@ -103,16 +127,35 @@ if signal.gen_method=="IF2Base"
 	%LPF
 	lpf_ddc = fir1(64,lpf_lowf_stop,'low');
     %freqz(lpf_ddc)
-	IfToBaseI=conv(lpf_ddc,IfToBaseI);
-	IfToBaseQ=conv(lpf_ddc,IfToBaseQ);
-    lpflen=length(lpf_ddc);
+% 	IfToBaseI=conv(lpf_ddc,IfToBaseI);
+% 	IfToBaseQ=conv(lpf_ddc,IfToBaseQ);
+%     lpflen=length(lpf_ddc);
+% 
+% 	IfToBaseI=IfToBaseI(round((lpflen+1)/2):end-round((lpflen-1)/2));
+%     IfToBaseQ=IfToBaseQ(round((lpflen+1)/2):end-round((lpflen-1)/2));
+%     IfToBaseI=resample(IfToBaseI,fs,IFfs);
 
-	IfToBaseI=IfToBaseI(round((lpflen+1)/2):end-round((lpflen-1)/2));
-    IfToBaseQ=IfToBaseQ(round((lpflen+1)/2):end-round((lpflen-1)/2));
+    Ifsignal=IfToBaseI+IfToBaseQ*j;
+    Ifsignal=[ddcconvbuf,Ifsignal];
+    [Ifsignal,xend]=Conv2(lpf_ddc,Ifsignal);
+    signal_new.ddcconvbuf=xend;
+    %resample ->downsample
+    % 	IfToBaseQ=resample(IfToBaseQ,fs,IFfs);
+    rebufferlen2=20;
+    rebufferlen=round(rebufferlen2*IFfs/fs);
+    Ifsignal= [ddcrebuf,Ifsignal];
+    signal_new.ddcrebuf=Ifsignal(end-2*rebufferlen+1:end);
+    Ifsignal=resample(Ifsignal,fs,IFfs);
+    Ifsignal=Ifsignal(rebufferlen2+1:end-rebufferlen2);
+    rxSignal=Ifsignal;
 
-	IfToBaseI=resample(IfToBaseI,fs,IFfs);
-	IfToBaseQ=resample(IfToBaseQ,fs,IFfs);
-    rxSignal=IfToBaseI+IfToBaseQ*j;
+%     rxSignal=IfToBaseI+IfToBaseQ*j;
 end
 end
 
+function [y,xend]=Conv2(h,x)
+    hlen=length(h);
+    y=conv(h,x);
+    y=y(hlen:end-hlen+1);
+    xend=x(end-hlen+2:end);
+end

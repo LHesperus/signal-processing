@@ -32,13 +32,21 @@ signal.noisePowType="SNR"';
 signal.encodeType="bin";
 signal.bindataType="Random";
 % orther parameter Init
-signal.LOphaseTemp=0;
-signal.LOphaseTemp_ddc=0;
 signal.f_offset=0;
 signal.p_offset=2*pi*0;
 signal.noise=100;
+% buffer
+signal.LOphaseTemp=0;
+signal.LOphaseTemp_ddc=0;
+signal.baseconvbuf=[];
+signal.ddcconvbuf=[];
+signal.baserebuf=[];
+signal.Ifrebuf=[];
+signal.ddcrebuf=[];
+signal.Ifrebuf=zeros(1,32);
+
 %% gen signal
-packageN=1;
+packageN=10;
 rxSignal=[];
 for ii=1:packageN
     [rxSignalTemp,signal]= gen_MQAM(signal);
@@ -51,4 +59,10 @@ rxSignal=resample(rxSignal,4*signal.fb,signal.fs);
 rccfilter=rcosdesign(0.5, 6, 4,'sqrt');
 rxSignal=conv(rxSignal,rccfilter);
 figure
-plot(rxSignal(1:4:end),'x')
+plot(rxSignal(1+101:4:end-100),'x')
+figure
+plot(rxSignal(1+102:4:end-100),'x')
+figure
+plot(rxSignal(1+103:4:end-100),'x')
+figure
+plot(rxSignal(1+104:4:end-100),'x')
