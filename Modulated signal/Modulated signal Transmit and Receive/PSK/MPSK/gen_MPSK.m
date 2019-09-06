@@ -1,9 +1,17 @@
-% signal_new:用来更新signal参数
-% M=2^k;
-function [rxSignal,signal_new]= gen_MQAM(signal)
+% gen MPSK:BPSK,QPSK,8PSK,16PSK
+% OQPSK,pi4DQPSK
+function [rxSignal,signal_new] = gen_MPSK(signal)
 j=sqrt(-1);
 signal_new=signal;
 M=signal.M;
+if signal.type=="OQPSK"
+    M=4;
+    signal_new.M=4;
+end
+if signal.type=="pi4DQPSK"
+    M=4;
+    signal_new.M=4;
+end
 k=log2(M);                   % Number of bits per symbol
 n=signal.symlen*k;
 f_offset=signal.f_offset;
@@ -20,6 +28,8 @@ rolloff=signal.rolloff;
 span=signal.span;
 sps=signal.sps;
 %% gen IQ 
+
+
 if signal.bindataType=="Random"
     dataBin=randi([0 1],n,1);                             % Generate vector of binary data
 end
@@ -33,17 +43,18 @@ end
 dataInMatrix = reshape(dataBin,length(dataBin)/k,k);  % Reshape data into binary k-tuples, k = log2(M)
 dataSymbolsIn = bi2de(dataInMatrix);                  % Convert to integers
 
-if(signal.encodeType=="bin")
-    dataMod = qammod(dataSymbolsIn,M,'bin');             % Binary coding, phase offset = 0
-end
-if(signal.encodeType=="Gray")
-    dataMod = qammod(dataSymbolsIn,M);                  % Gray coding, phase offset = 0
-end
+[dataMod,newPhase]=pskdec2mod(dataSymbolsIn,signal);  %PSKmod
+signal_new.InitPhase=newPhase;
 dataIQ=dataMod;
 %% BaseBand mod
 %% filter and resample (gen baseband signal)
-txSignal=zeros(1,length(dataIQ)*sps);
-txSignal(1:sps:end)=dataIQ;
+if signal.type=="OQPSK"
+    spsTemp=sps/2;
+else
+    spsTemp=sps;
+end
+txSignal=zeros(1,length(dataIQ)*spsTemp);
+txSignal(1:spsTemp:end)=dataIQ;
 rrcFilter = rcosdesign(rolloff, span, sps,'sqrt');
 txSignal=conv(txSignal,rrcFilter);
 rclen=length(rrcFilter);
@@ -65,10 +76,7 @@ if signal.gen_method=="Baseband"
     end
     return
 end
-% figure;plot(txSignal,'x')
-% rxSignal=conv(txSignal,rrcFilter);
-% figure;plot(rxSignal)
-% figure;plot(rxSignal(1:sps:end),'x') 
+
 %% gen IF signal
 if signal.gen_method=="IF"||signal.gen_method=="IF2Base"
     txSignalIF=resample(txSignal,IFfs,fs);
@@ -114,5 +122,8 @@ if signal.gen_method=="IF2Base"
 	IfToBaseQ=resample(IfToBaseQ,fs,IFfs);
     rxSignal=IfToBaseI+IfToBaseQ*j;
 end
+
+
+
 end
 
