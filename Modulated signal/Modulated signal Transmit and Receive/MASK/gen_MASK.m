@@ -1,6 +1,4 @@
-% signal_new:用来更新signal参数
-% M=2^k;
-function [rxSignal,signal_new]= gen_MQAM(signal)
+function [rxSignal,signal_new]= gen_MASK(signal)
 j=sqrt(-1);
 signal_new=signal;
 M=signal.M;
@@ -39,12 +37,8 @@ end
 dataInMatrix = reshape(dataBin,length(dataBin)/k,k);  % Reshape data into binary k-tuples, k = log2(M)
 dataSymbolsIn = bi2de(dataInMatrix);                  % Convert to integers
 
-if(signal.encodeType=="bin")
-    dataMod = qammod(dataSymbolsIn,M,'bin');             % Binary coding, phase offset = 0
-end
-if(signal.encodeType=="Gray")
-    dataMod = qammod(dataSymbolsIn,M);                  % Gray coding, phase offset = 0
-end
+dataMod=MASKmod(dataSymbolsIn,signal);
+
 dataIQ=dataMod;
 %% BaseBand mod
 %% filter and resample (gen baseband signal)
@@ -149,6 +143,17 @@ if signal.gen_method=="IF2Base"
 
 %     rxSignal=IfToBaseI+IfToBaseQ*j;
 end
+end
+
+function dataM=MASKmod(data,signal)
+symorder=signal.encodeType;
+M=signal.M;
+    if symorder=="Gray"
+        dataM = bin2gray(data,'psk',M);
+    end
+    if symorder=="bin"
+        dataM=data;
+    end
 end
 
 function [y,xend]=Conv2(h,x)
