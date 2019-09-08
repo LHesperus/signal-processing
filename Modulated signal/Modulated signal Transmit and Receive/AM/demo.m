@@ -16,7 +16,7 @@ signal.am.in_sig_phase=[0,0,0];
 signal.am.lpf_lowf_stop=40*max(signal.am.in_sig_f0)/signal.am.IFfs;
 signal.am.len=1000;                         % baseband len of one package
 %channel para
-signal.noise=30;                            %SNR
+signal.noise=10;                            %SNR
 %buffer
 signal.am.LOphaseTemp=0;                    %IF Local Oscillator Phase
 signal.am.LOphaseTemp_ddc=0;                %DDC Local Oscillator Phase

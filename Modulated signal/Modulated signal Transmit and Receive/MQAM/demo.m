@@ -17,7 +17,7 @@ signal.f_offset=0;                 % Carrier offset
 signal.lpf_lowf_stop=4*signal.fb/(signal.IFfs/2);
 % Modulate parameter
 signal.type="MQAM";
-signal.M = 16;                     % Size of signal constellation        
+signal.M = 64;                     % Size of signal constellation        
 signal.symlen = 300;               % Number of symbol
 % shape filter
 signal.rolloff=0.5;
@@ -34,7 +34,7 @@ signal.bindataType="Random";
 % orther parameter Init
 signal.f_offset=0;
 signal.p_offset=2*pi*0;
-signal.noise=100;
+signal.noise=5;
 % buffer
 signal.LOphaseTemp=0;
 signal.LOphaseTemp_ddc=0;
