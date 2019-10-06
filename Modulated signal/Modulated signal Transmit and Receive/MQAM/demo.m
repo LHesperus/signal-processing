@@ -16,13 +16,16 @@ signal.f_offset=0;                 % Carrier offset
 % IF2Base parameter
 signal.lpf_lowf_stop=4*signal.fb/(signal.IFfs/2);
 % Modulate parameter
-signal.type="MQAM";
+signal.type="MQAM"; % MQAM,8QAM-1,MSK,GMSK
 signal.M = 64;                     % Size of signal constellation        
 signal.symlen = 300;               % Number of symbol
 % shape filter
 signal.rolloff=0.5;
 signal.span=10;
 signal.sps=4;
+% msk para
+signal.mskdataenc='diff';%diff,nodiff
+signal.msk_phase=0;
 %
 signal.gen_method="Baseband";
 signal.gen_method="IF";
@@ -34,7 +37,7 @@ signal.bindataType="Random";
 % orther parameter Init
 signal.f_offset=0;
 signal.p_offset=2*pi*0;
-signal.noise=5;
+signal.noise=30;
 % buffer
 signal.LOphaseTemp=0;
 signal.LOphaseTemp_ddc=0;
@@ -49,7 +52,7 @@ signal.Ifrebuf=zeros(1,32);
 packageN=10;
 rxSignal=[];
 for ii=1:packageN
-    [rxSignalTemp,signal]= gen_MQAM(signal);
+    [rxSignalTemp,signal]= gen_MQAM_MSK(signal);
     rxSignal=[rxSignal,rxSignalTemp];
 end
 
@@ -66,3 +69,6 @@ figure
 plot(rxSignal(1+103:4:end-100),'x')
 figure
 plot(rxSignal(1+104:4:end-100),'x')
+if signal.type=="MSK"
+    eyediagram(rxSignal,16);
+end

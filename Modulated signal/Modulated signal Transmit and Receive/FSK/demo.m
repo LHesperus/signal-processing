@@ -13,7 +13,7 @@ signal.fs=200e3;                    % Sample frequency of baseband
 signal.fb=10e3;                    % Symbol rate
 % IF parameter
 signal.IFfs=200e3;                  % Sample frequency of Intermediate frequency 
-signal.fc=20e3;                     % Carrier frequency             
+signal.fc=50e3;                     % Carrier frequency             
 signal.freq_sep=10e3;
 % IF2Base parameter
 % signal.lpf_lowf_stop=(signal.fc+(signal.M-1)*signal.freq_sep)/(signal.IFfs/2);
@@ -86,7 +86,7 @@ if signal.gen_method=="IF"
 % rccfilter=rcosdesign(0.5, 6, 4,'sqrt');
 % rxSignal=conv(rxSignal,rccfilter);
 % rxSignal=rxSignal(2*length(rccfilter):end-2*length(rccfilter));
-    figure;plot(rxSignal)
+    figure;plot(rxSignal);title('IF signal')
     len=length(rxSignal);
     ff=(-len/2:len/2-1)*(signal.IFfs/len);
     figure;plot(ff,fftshift(abs(fft(rxSignal))))
@@ -103,7 +103,7 @@ if signal.gen_method=="IF"
 %     lpf_ddc=1;
     rxI=conv(lpf_ddc,ddcI);
     rxQ=conv(lpf_ddc,ddcQ);
-    figure;subplot(211);plot(rxI);subplot(212);plot(rxQ);
+    figure;subplot(211);plot(rxI);subplot(212);plot(rxQ);suptitle('IQ after lpf')
     len=length(rxI);
     ff=(-len/2:len/2-1)*(signal.IFfs/len);
     figure;plot(ff,fftshift(abs(fft(rxI+rxQ*j))))
@@ -116,13 +116,15 @@ if signal.gen_method=="IF2Base"
     figure;plot(ff,fftshift(abs(fft(rxSignal))));title('Baseband Spectrum')
     % rrc
 %     rxSignal=resample(rxSignal,8*signal.fb,signal.fs);
-%     rccfilter=rcosdesign(0.5, 6, 8,'sqrt');
+%     rccfilter=rcosdesign(0.5, 6, 20,'sqrt');
 %     rxSignal=conv(rxSignal,rccfilter);
 %     rxSignal=rxSignal(2*length(rccfilter):end-2*length(rccfilter));
 %     figure;subplot(211);plot(real(rxSignal));subplot(212);plot(imag(rxSignal));suptitle('by rcc filter')
     
     I=real(rxSignal);
     Q=imag(rxSignal);
+    figure;plot(fftshift(abs(fft(I))));
+    figure;plot(fftshift(abs(fft(Q))));
     f=I(2:end).*Q(1:end-1)-I(1:end-1).*Q(2:end);
     
 %     f=resample(f,8*signal.fb,signal.fs);

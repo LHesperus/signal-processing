@@ -1,6 +1,6 @@
 % signal_new:用来更新signal参数
 % M=2^k;
-function [rxSignal,signal_new]= gen_MQAM(signal)
+function [rxSignal,signal_new]= gen_MQAM_MSK(signal)
 j=sqrt(-1);
 signal_new=signal;
 M=signal.M;
@@ -17,6 +17,9 @@ lpf_lowf_stop=signal.lpf_lowf_stop;
 rolloff=signal.rolloff;
 span=signal.span;
 sps=signal.sps;
+% msk para
+mskdataenc=signal.mskdataenc;
+msk_phase=signal.msk_phase;
 %buf
 LOphaseTemp=signal.LOphaseTemp;
 LOphaseTemp_ddc=signal.LOphaseTemp_ddc;
@@ -45,11 +48,19 @@ end
 if(signal.encodeType=="Gray")
     dataMod = qammod(dataSymbolsIn,M);                  % Gray coding, phase offset = 0
 end
+if signal.type=="8QAM-1"
+    dataMod=gen8QAM(dataSymbolsIn,1);
+end
 dataIQ=dataMod;
 %% BaseBand mod
 %% filter and resample (gen baseband signal)
-txSignal=zeros(1,length(dataIQ)*sps);
-txSignal(1:sps:end)=dataIQ;
+if signal.type=="MSK"
+   [txSignal,signal_new.msk_phase] = mskmod(dataBin,sps,mskdataenc,msk_phase);
+   txSignal=txSignal.';
+else
+   txSignal=zeros(1,length(dataIQ)*sps);
+   txSignal(1:sps:end)=dataIQ; 
+end
 rrcFilter = rcosdesign(rolloff, span, sps,'sqrt');
 % shape-conv
 txSignal=[baseconvbuf,txSignal];
@@ -156,4 +167,19 @@ function [y,xend]=Conv2(h,x)
     y=conv(h,x);
     y=y(hlen:end-hlen+1);
     xend=x(end-hlen+2:end);
+end
+
+function y=gen8QAM(dedata,type)
+if type==1
+    j=sqrt(-1);
+    y=dedata;
+    y(y==0)=-1+j;
+    y(y==1)=0+j;
+    y(y==2)=1+j;
+    y(y==3)=1;
+    y(y==4)=1-j;
+    y(y==5)=-j;
+    y(y==6)=-1-j;
+    y(y==7)=-1;
+end
 end

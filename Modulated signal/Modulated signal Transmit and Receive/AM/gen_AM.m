@@ -35,7 +35,12 @@ if signal.gen_method=="Baseband"
     rxSignal=awgn(rxSignal,signal.noise,'measured');
     return
 end
-
+% use phase message to gen ssb
+if signal.type=="USB"||signal.type=="LSB"
+   x=m_a*in_sig_amp.'.*exp(j*(2*pi*in_sig_f0.'.*t+in_sig_phase.'));
+   x=sum(x,1); 
+   x=x/sum(in_sig_amp);
+end
 %% IF mod
 if signal.gen_method=="IF"||signal.gen_method=="IF2Base"
     %resample
@@ -47,7 +52,19 @@ if signal.gen_method=="IF"||signal.gen_method=="IF2Base"
     xIF=xIF(rebufferlen+1:end-rebufferlen);
 
      % mod
-    txSignalIF = ammod(xIF,fc,IFfs,LOphaseTemp,fc_amp);
+     if signal.type=="AM"
+         txSignalIF = ammod(xIF,fc,IFfs,LOphaseTemp,fc_amp);
+     end
+     t=(0:length(xIF)-1)/IFfs;
+     if signal.type=="USB"
+        % txSignalIF = ssbmod(xIF,fc,IFfs,LOphaseTemp,'upper'); %cannot package continue
+         txSignalIF=real((xIF).*exp(j*2*pi*fc*t+j*LOphaseTemp));
+     end
+     if signal.type=="LSB"
+%         txSignalIF = ssbmod(xIF,fc,IFfs,LOphaseTemp);
+          txSignalIF=real((xIF).*exp(-j*2*pi*fc*t-j*LOphaseTemp));
+     end
+    
     signal_new.am.LOphaseTemp=LOphaseTemp+2*pi*fc/IFfs*(length(xIF)+0);
     rxSignal=awgn(txSignalIF,signal.noise,'measured');
     if signal.gen_method=="IF"
