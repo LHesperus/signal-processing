@@ -168,7 +168,7 @@ if signal.gen_method=="IF2Base"
 	IfToBaseQ=xs_ddc.*txSignalIF;
 	%LPF
 	lpf_ddc = fir1(64,lpf_lowf_stop,'low');
-    lpf_ddc=1;
+%     lpf_ddc=1;
     %freqz(lpf_ddc)
     Ifsignal=IfToBaseI+IfToBaseQ*j;
     Ifsignal=[ddcconvbuf,Ifsignal];
