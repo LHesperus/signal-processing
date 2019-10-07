@@ -2,7 +2,7 @@ clc
 clear all
 close all
 %% base parameter
-signal.type="USB";  %AM,LSB,USB
+signal.type="LSB";  %AM,LSB,USB
 signal.am.m_a=0.3;                          %modulation index,|m_a|<1
 signal.am.fs=64e3;                          %baseband fs
 signal.am.IFfs=1e6;                         % IF fs
@@ -28,12 +28,15 @@ signal.am.ddcconvbuffer=[];                 %DDC CONV Buffer
 signal.gen_method="Baseband";
 signal.gen_method="IF";
 % signal.gen_method="IF2Base";
+signaltmp=signal;
 %% gen signal
-packageN=5;
+packageN=50;
+signaltmp.srcdata=[];
 rxSignal=[];
 for ii=1:packageN
     [rxSignalTemp,signal] = gen_AM(signal);
     rxSignal=[rxSignal,rxSignalTemp];
+    signaltmp.srcdata=signal.srcdata;
 end
 figure;
 subplot(2,1,1)
@@ -44,3 +47,16 @@ figure
 len=length(rxSignal);
 ff=(-len/2:len/2-1)*(signal.am.IFfs/len);
 plot(ff,abs(fftshift(fft(rxSignal))))
+%% save data
+if signal.type=="AM"
+    gen_AMfile(signaltmp,rxSignal,'.dat','float')
+end
+if signal.type=="LSB"||signal.type=="USB"
+    gen_SSBfile(signaltmp,rxSignal,'.dat','float')
+end
+%% read data test
+[filename, pathname] = uigetfile('*.dat', 'Pick a data file');
+fid = fopen([pathname,filename]);
+data_wav = fread(fid,[1 10000],'float');
+fclose(fid);
+figure;plot(data_wav(1,100:end))

@@ -4,14 +4,14 @@ close all
 % para
 
 %signal.fm.m_a=0.3;                          %modulation index,|m_a|<1
-signal.fm.fs=100e3;                          %baseband fs
+signal.fm.fs=64e3;                          %baseband fs
 signal.fm.IFfs=200e3;                        % IF fs
 signal.fm.fc=4e3;
 signal.fm.fDev=1e3;
 signal.fm.f_offset=0;
 % baseband para (x=Asin(w1t+p1)+Bsin(w2t+p2)+Csin(w3+p3))
-signal.fm.in_sig_amp=[1,0,0];
-signal.fm.in_sig_f0=[2e2,0,0];
+signal.fm.in_sig_amp=[1,1,0];
+signal.fm.in_sig_f0=[2e2,1e2,0];
 signal.fm.in_sig_phase=[0,0,0];
 %ddc para
 signal.fm.lpf_lowf_stop=4*max(signal.fm.in_sig_f0)/signal.fm.IFfs;
@@ -63,15 +63,15 @@ subplot(2,1,1)
 plot(real(rxSignal))
 subplot(2,1,2)
 plot(imag(rxSignal))
-
+suptitle('receive IQ')
 %% demod
 I=real(rxSignal);
 Q=imag(rxSignal);
 f=I(2:end).*Q(1:end-1)-I(1:end-1).*Q(2:end);
 figure
-plot(f)
+plot(f);title('demod')
 
 
 figure;
 Y=abs(fftshift(fft(rxSignal)));
-plot(Y)
+plot(Y);title('receive Spetrum')

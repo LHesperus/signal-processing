@@ -24,6 +24,7 @@ t=(0:len-1)/fs;
 % baseband signal
 x=m_a*in_sig_amp.'.*sin(2*pi*in_sig_f0.'.*t+in_sig_phase.');
 x=sum(x,1);
+signal_new.srcdata=x;
 %normalization
 x=x/sum(in_sig_amp);
 signal_new.am.in_sig_phase=2*pi*in_sig_f0.*(t(end)+t(2))+in_sig_phase;
