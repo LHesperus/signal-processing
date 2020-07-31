@@ -48,7 +48,9 @@ Lsur=len/copy;%快时间维分块长度,按每个PRI分块,可以试试乘2或除2
 Dim=floor(len/Lsur);%
 FastTimeDim=zeros(Dim,Lsur);
 
-
+% [Range,doppler,RD]=RangeDoppler(s_ref,s_echo,Lsur,0,0,0,fs,0);
+% [Range,doppler,RD]=RangeDoppler(s_ref,s_echo,Lsur,10000,0,0,fs,0);
+[Range,doppler,RD]=RangeDoppler(s_ref,s_echo,Lsur,0,20480,512,fs,0);
 for ii=1:Dim
     FastTimeDim(ii,:)=fft(s_ref((ii-1)*Lsur+1:ii*Lsur)).*conj(fft(s_echo((ii-1)*Lsur+1:ii*Lsur)));
     FastTimeDim(ii,:)=(ifft(FastTimeDim(ii,:)));%不加fftshit，距离从0开始
