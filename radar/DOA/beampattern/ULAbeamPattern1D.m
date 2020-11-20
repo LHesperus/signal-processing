@@ -7,7 +7,7 @@ clc;clear all;close all
 j=sqrt(-1);
 theta=-90:0.01:90;
 theta=theta/180*pi;
-theta0=10/180*pi;
+theta0=40/180*pi;%指向
 N=16;% 阵元个数
 lambda=3e8/600e6;
 d=lambda/2;%阵元间距
@@ -37,7 +37,7 @@ disp(['3dB主瓣宽度',num2str(theta3dB)])
 %% 公式未化简版本：F=|w……{H}a(theta)|,可更改w实现加窗
 phi=2*pi*d*sin(theta)/lambda;
 phi0=2*pi*d*sin(theta0)/lambda;
-a=exp(-j*(0:N-1)'*phi);
+a=exp(-j*(0:N-1)'*phi);%是N*length(phi)维矩阵
 w=exp(-j*(0:N-1)'*phi0);
 % w = fir1(15,0.01,'low')';
 % figure;plot(abs(w))
@@ -51,7 +51,9 @@ title('阵元间距\lambda /2的16阵元均匀线阵方向图')
 axis([-100 100 -50 0])
 
 
-%% 由于均匀线阵的方向图可以简化成FFT的形式，也可以用fft求 fft(w),但是求得的图有点不一样，不知怎么回事
+%% 由于均匀线阵的方向图可以简化成FFT的形式，也可以用fft求 fft(w),
+% 但是求得的图有点不一样，最开始不知怎么回事，后来发现是fft的横坐标其实是sin(theta),用asin(theta)就好了
+% theta=0:0.001:2*pi;
 phi=2*pi*d*sin(theta)/lambda;
 phi0=2*pi*d*sin(theta0)/lambda;
 w=exp(-j*(0:N-1)'*phi0);
@@ -63,5 +65,13 @@ xlabel('空间角度/ ( {\circ} )')
 ylabel('归一化方向图/dB')
 title('阵元间距\lambda /2的16阵元均匀线阵方向图')
 axis([-100 100 -50 0])
+figure
+polar(theta',(F))
 
-
+tmp=linspace(-1,1,length(theta));
+figure
+plot(asin(tmp)*180/pi,20*log10(F))%这里是乘20,注意fft的
+xlabel('空间角度/ ( {\circ} )')
+ylabel('归一化方向图/dB')
+title('阵元间距\lambda /2的16阵元均匀线阵方向图')
+axis([-100 100 -50 0])
