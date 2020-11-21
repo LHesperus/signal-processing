@@ -1,4 +1,4 @@
-%% 杂波
+%% 高斯分布和瑞利分布随机数
 % Author：LCG  UESTC 2020.11.21
 % ref :雷达地海杂波测量与建模，p256
 % 注意：理论和实际值是有差别的，理论是连续值，实际的是离散的，所以pdf幅度和公式实际算的不同
@@ -34,4 +34,4 @@ subplot(221);bar(x,y);title('pdf by data')
 subplot(222);plot(x,pdf_v);title('pdf by formula')
 subplot(223);semilogy(x,cdf_v);title('cdf');ylabel('1-CDF')
 subplot(224);plot(data);title('data')
-suptitle(['Gauss distribution: ','\mu=',num2str(mu),' \sigma=',num2str(sigma)])
+suptitle(['Rayleigh distribution: ',' \sigma=',num2str(sigma)])
