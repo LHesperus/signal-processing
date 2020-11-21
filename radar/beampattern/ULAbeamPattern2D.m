@@ -33,7 +33,6 @@ figure
 mesh(fd,theta/pi*180,F)
 xlabel('归一化频率')
 ylabel('角度')
-colormap(colorcube)
 axis([-0.5 0.5 -100 100 -50 0])
 figure
 imagesc(fd,theta/pi*180,F)%用这个函数好像theta不准
