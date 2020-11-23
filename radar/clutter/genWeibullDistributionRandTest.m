@@ -19,3 +19,5 @@ subplot(223);semilogy(x,cdf_v);title('cdf');ylabel('1-CDF')
 subplot(224);plot(data);title('data')
 suptitle(['weibull distribution: ','b=',num2str(b),' v=',num2str(v)])
 
+figure
+plot(log10(abs(fftshift(fft(xcorr(data-mean(data)))))))
