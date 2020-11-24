@@ -1,5 +1,6 @@
 %% DOA FFT 测试
 % LCG UESTC 2020.11.24
+% fft 求空间频率谱，角度也是频率
 %% parameter
 clc;clear ;close all
 j=sqrt(-1);
