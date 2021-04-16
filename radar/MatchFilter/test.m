@@ -26,7 +26,7 @@ figure
 subplot(221);plot(t,real(s))
 subplot(222);plot(t,imag(s))
 subplot(223);plot(ff,S)
-% 时域相关
+%------------------------------- 时域相关----------------------------------
 sh=conv(s,h);
 sh=abs(sh(len/2+1:end-len/2+1));
 yy=linspace(min(sh),max(sh),length(sh));
@@ -43,7 +43,7 @@ disp(['-4dB带宽：',num2str(B)])
 disp(['压缩比=T_LFM/(1/B)=T_LFM*B=',num2str(T_LFM*B)])
 
 
-% 频域处理
+%-------------------------------- 频域处理----------------------------------
 h=s;
 sh2=abs(fftshift(ifft(fft(s).*conj(fft(h)))));
 figure;
