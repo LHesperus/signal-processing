@@ -17,15 +17,15 @@ M=32;               % 脉冲个数
 fc=600e6;           % 载频
 lambda=c/fc;        % 波长
 % 目标参数
-v=[0 10 30];       %速度，地杂波等先用0速度点目标代替
+v=[0 80 30];       %速度，地杂波等先用0速度点目标代替
 R=[10e3 2e3 100e3]; %距离
-A=[10 1 1];         %目标强度控制
+A=[0 1 1];         %目标强度控制
 fd=2*v/lambda;      %多普勒频率
 tau=2*R/c;          %时延
 
-disp(['最大测距范围：',num2str(PRI*c/2)])
+disp(['最大测距范围/最大不模糊距离：',num2str(PRI*c/2)])
 disp(['最大测速范围：',num2str(-1/PRI*lambda/2/2),'~',num2str(1/PRI*lambda/2/2)])
-
+disp(['距离分辨率',num2str(c/(2*B))])
 %% 发射部分
 % 生成线性调频信号
 [s,t]=genLFM(fs,0,B,T_LFM);len=length(s);
@@ -47,7 +47,7 @@ figure
 subplot(221);plot(real(s_lfm))
 subplot(222);plot(imag(s_lfm))
 subplot(223);plot(ff,S_lfm)
-suptitle('发射波形基带')
+% suptitle('发射波形基带')
 
 
 %% 信道部分
@@ -75,8 +75,16 @@ end
 figure
 mesh(abs(Xpc))
 title('多个脉冲脉压结果')
+figure
+plot(abs(reshape(Xpc.',1,[])))
 figure;plot(abs(fftshift(fft(sum(X,2),1024))))% 测试多普勒频率
-title('多普勒频率积累测试')
+title('多普勒频率积累测试（数据脉压前脉冲内求和）')
+figure;mesh(abs(fftshift(fft(X,M,1))))% 测试多普勒频率
+title('多普勒频率积累测试（数据脉压前脉冲内未求和）')
+figure;plot(abs(fftshift(fft(sum(Xpc,2),1024))))% 测试多普勒频率
+title('多普勒频率积累测试（数据脉压后脉冲内求和）')
+figure;mesh(abs(fftshift(fft(Xpc,M,1))))% 测试多普勒频率
+title('多普勒频率积累测试（数据脉压后脉冲内未求和）')
 %------------------------ MTI----------------------------------------------
 % 对消后低频部分信号被抑制，可能波及到速度低的目标
 % 高通滤波器
